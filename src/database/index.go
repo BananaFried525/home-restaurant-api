@@ -7,6 +7,7 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"github.com/BananaFried525/home-restaurant-api/src/configs"
 	"github.com/BananaFried525/home-restaurant-api/src/database/models"
@@ -27,7 +28,9 @@ func Init() {
 		_configs.DbName,
 	)
 
-	_db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	_db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Error),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,6 +41,7 @@ func Init() {
 		&models.Order{},
 		&models.ReserveTable{},
 		&models.RestaurantTable{},
+		&models.Localize{},
 	)
 
 	connection = _db
@@ -45,6 +49,7 @@ func Init() {
 }
 
 func Begin() *gorm.DB {
+	log.Println("Database transaction begin")
 	dbTxn := connection.Begin(&sql.TxOptions{
 		Isolation: sql.LevelRepeatableRead,
 	})

@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -13,32 +15,53 @@ const (
 )
 
 type Food struct {
-	gorm.Model
+	ID                uint `gorm:"primaryKey;autoIncrement:true"`
 	Name              string
 	DisplayImage      string
-	Description       string `gorm:"type:text"`
-	Price             int    `gorm:"type:DECIMAL(10,2);default:0"`
-	Status            FoodStatus
-	IsShow            bool `gorm:"default:false"`
-	DiscountFixed     int  `gorm:"default:0"`
-	DiscountPercent   int  `gorm:"default:0"`
-	VatPercent        int  `gorm:"default:7"`
-	ServiceFee        int  `gorm:"default:0"`
-	ServiceFeePercent int  `gorm:"default:10"`
+	Description       string         `gorm:"type:text"`
+	Price             float64        `gorm:"type:DECIMAL(10,2);default:0"`
+	Status            FoodStatus     `gorm:"default:active"`
+	IsShow            bool           `gorm:"default:false"`
+	DiscountFixed     int            `gorm:"default:0"`
+	DiscountPercent   int            `gorm:"default:0"`
+	VatPercent        int            `gorm:"default:7"`
+	ServiceFee        int            `gorm:"default:0"`
+	ServiceFeePercent int            `gorm:"default:10"`
+	CreatedAt         time.Time      `gorm:"type:TIMESTAMP;default:CURRENT_TIMESTAMP"`
+	UpdatedAt         time.Time      `gorm:"type:TIMESTAMP;default:CURRENT_TIMESTAMP;onUpdate:CURRENT_TIMESTAMP"`
+	DeletedAt         gorm.DeletedAt `gorm:"index"`
 }
 
 func (Food) TableName() string {
 	return "food"
 }
 
-func GetFood(tx *gorm.DB, id *int) []Food {
+type GetFoodParams struct {
+	// ID *uint
+}
+
+func GetFood(params *GetFoodParams, dbTxn *gorm.DB) ([]Food, error) {
 	var food []Food
 
-	if id != nil {
-		tx.Where("id = ?", id)
+	err := dbTxn.Where("is_show = true").Find(&food).Error
+	if err != nil {
+		return food, err
 	}
 
-	tx.Find(&food)
+	return food, nil
+}
 
-	return food
+type GetListFoodByIDParams struct {
+	ID []uint
+}
+
+func GetListFoodByID(params *GetListFoodByIDParams, dbTxn *gorm.DB) *[]Food {
+	var result *[]Food
+
+	err := dbTxn.Where("id in ?", params.ID).Find(&result).Error
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return result
 }

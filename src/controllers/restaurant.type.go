@@ -20,15 +20,6 @@ type FoodAttribute struct {
 	Status            FoodStatus
 }
 
-type MenuAttribute struct {
-	FoodID          uint
-	FoodName        string
-	FoodPrice       int
-	FoodImage       string
-	FoodDescription string
-	FoodStatus      string
-}
-
 type TableAttribute struct {
 	ID             string
 	TableNumber    int

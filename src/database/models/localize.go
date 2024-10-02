@@ -1,7 +1,7 @@
 package models
 
 type Localize struct {
-	ID    int `gorm:"primaryKey,autoIncrement"`
+	ID    uint `gorm:"primaryKey;autoIncrement:true"`
 	Key   string
 	Value string
 }

@@ -1,25 +1,29 @@
 package validates
 
 type GetTableRequest struct {
+	Limit  int `form:"limit,default=10"`
+	Offset int `form:"offset,default=0"`
 }
 
 type AddTableRequest struct {
-	TableNumber    int `json:"table_number" binding:"required" min:"1"`
-	CustomerNumber int `json:"customer_number" binding:"required" min:"1"`
+	TableNumber    uint `json:"table_number" binding:"required" min:"1"`
+	CustomerNumber int  `json:"customer_number" binding:"required" min:"1"`
 }
 
 type GetMenuRequest struct {
-	TableNumber int    `form:"table_number" binding:"required" min:"1"`
-	TableID     string `form:"table_id" binding:"required"`
+}
+
+type GetTableDetailRequest struct {
+	TableNumber uint `form:"table_number" binding:"required" min:"1"`
 }
 
 type FoodOrderAttribute struct {
-	FoodID  int    `json:"food_id" binding:"required"`
-	Amount  int    `json:"amount" binding:"required" min:"1"`
-	Comment string `json:"comment"`
+	FoodID  uint    `json:"food_id" binding:"required"`
+	Amount  int     `json:"amount" binding:"required" min:"1"`
+	Comment *string `json:"comment"`
 }
-type AddOrderRequest struct {
-	TableNumber int                  `json:"table_number" binding:"required" min:"1"`
-	TableID     string               `json:"table_id" binding:"required"`
-	Food        []FoodOrderAttribute `json:"food" binding:"required"`
+type OrderFoodRequest struct {
+	TableNumber    uint                 `json:"table_number" binding:"required" min:"1"`
+	ReserveTableID uint                 `json:"reserve_table_id" binding:"required" min:"1"`
+	Food           []FoodOrderAttribute `json:"food" binding:"required" min:"1"`
 }
