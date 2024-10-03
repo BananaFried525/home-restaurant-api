@@ -37,11 +37,12 @@ func Init() {
 
 	// AUTO migrate for sync
 	_db.AutoMigrate(
+		&models.CustomerOrder{},
+		&models.Customer{},
 		&models.Food{},
 		&models.Order{},
-		&models.ReserveTable{},
-		&models.RestaurantTable{},
-		&models.Localize{},
+		&models.TableInfo{},
+		&models.TableOrder{},
 	)
 
 	connection = _db

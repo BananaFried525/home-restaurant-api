@@ -15,19 +15,23 @@ const (
 )
 
 type Order struct {
-	ID           uint        `gorm:"primaryKey;autoIncrement:true"`
-	TableOrderID uint        `gorm:"not null"`
-	FoodID       uint        `gorm:"not null"`
-	Status       OrderStatus `gorm:"default:pending"`
-	ConfirmDate  string
-	FinishDate   string
-	CancelDate   string
-	CreatedAt    time.Time      `gorm:"type:TIMESTAMP;default:CURRENT_TIMESTAMP"`
-	UpdatedAt    time.Time      `gorm:"type:TIMESTAMP;default:CURRENT_TIMESTAMP;onUpdate:CURRENT_TIMESTAMP"`
-	DeletedAt    gorm.DeletedAt `gorm:"index"`
+	ID              uint        `gorm:"primaryKey;autoIncrement:true"`
+	TableOrderID    uint        `gorm:"not null"`
+	CustomerOrderID uint        `gorm:"not null"`
+	FoodID          uint        `gorm:"not null"`
+	Status          OrderStatus `gorm:"default:pending"`
+	PendingAt       time.Time
+	DoneAt          *time.Time
+	CancelAt        *time.Time
+	Remark          *string        `gorm:"type:text"`
+	CreatedAt       time.Time      `gorm:"type:TIMESTAMP;default:CURRENT_TIMESTAMP"`
+	UpdatedAt       time.Time      `gorm:"type:TIMESTAMP;default:CURRENT_TIMESTAMP;onUpdate:CURRENT_TIMESTAMP"`
+	DeletedAt       gorm.DeletedAt `gorm:"index"`
 
-	TableOrder *TableOrder `gorm:"foreignKey:TableOrderID"`
-	Food       *Food       `gorm:"foreignKey:FoodID"`
+	// association
+	TableOrder    *TableOrder    `gorm:"foreignKey:TableOrderID"`
+	CustomerOrder *CustomerOrder `gorm:"foreignKey:CustomerOrderID"`
+	Food          *Food          `gorm:"foreignKey:FoodID"`
 }
 
 func (Order) TableName() string {
