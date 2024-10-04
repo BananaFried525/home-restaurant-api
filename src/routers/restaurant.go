@@ -7,9 +7,8 @@ import (
 
 func Restaurant(g *gin.RouterGroup) {
 	r := g.Group("/restaurant")
-	r.GET("/table", controllers.GetTable)
-	r.GET("/table/detail", controllers.GetTableDetail)
-	r.POST("/table", controllers.AddTable)
-	r.GET("/menu", controllers.GetMenu)
-	r.POST("/order", controllers.OrderFood)
+
+	r.GET("/table", controllers.GetTableList)
+	r.POST("/table-order", controllers.CreateTableOrder)
+	// r.GET("/table-order", controllers.)
 }

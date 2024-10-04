@@ -16,8 +16,8 @@ const (
 type TableOrderStatus string
 type TableOrder struct {
 	ID            uint   `gorm:"primaryKey;autoIncrement:true"`
-	Number        string `gorm:"unique;size:20"`
-	ReceiptNumber string `gorm:"unique;size:20"`
+	Number        string `gorm:"unique;size:10"`
+	ReceiptNumber string `gorm:"unique;size:10"`
 	TableInfoID   uint   `gorm:"not null"`
 	CustomerID    *uint
 	Status        TableOrderStatus `gorm:"default:open"`

@@ -17,8 +17,6 @@ var connection *gorm.DB
 
 func Init() {
 	_configs := configs.Load.Database
-
-	log.Println("Database connecting...")
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		_configs.User,
