@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/BananaFried525/home-restaurant-api/internal/adapters/repository/models"
+	"github.com/BananaFried525/home-restaurant-api/internal/core/domain/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

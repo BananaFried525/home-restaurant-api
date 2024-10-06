@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/BananaFried525/home-restaurant-api/boots"
+	"github.com/BananaFried525/home-restaurant-api/internal/adapters/handler/http/routers"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/middlewares"
-	"github.com/BananaFried525/home-restaurant-api/routers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,8 +14,11 @@ func main() {
 
 	r := gin.New()
 
-	r.Use(gin.Logger())
-	r.Use(gin.CustomRecovery(middlewares.Recovery))
+	log := middlewares.NewLoggingMiddleware()
+	r.Use(log.SystemLog())
+
+	recover := middlewares.NewRecoverMiddleware()
+	r.Use(gin.CustomRecovery(recover.Recovery))
 
 	routers.New(r, b.Database)
 

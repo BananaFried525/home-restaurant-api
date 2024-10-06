@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/BananaFried525/home-restaurant-api/internal/adapters/repository/models"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/domain"
+	"github.com/BananaFried525/home-restaurant-api/internal/core/domain/models"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/ports"
 	"gorm.io/gorm"
 )
