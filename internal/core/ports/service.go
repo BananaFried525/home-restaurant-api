@@ -12,3 +12,7 @@ type TableService interface {
 	UpdateTable(ID uint, table domain.Table) error
 	DeleteTable(ID uint) error
 }
+
+type OrderService interface {
+	CreateTableOrder(tableID uint) (domain.TableOrder, error)
+}

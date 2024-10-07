@@ -12,3 +12,11 @@ type TableRepository interface {
 	UpdateTable(ID uint, table domain.Table) error
 	DeltetTable(ID uint) error
 }
+
+type TableOrderRepository interface {
+	CreateTableOrder(tableOrder models.TableOrder) (*models.TableOrder, error)
+	GetLatestTableOrder(tableID uint) (*models.TableOrder, error)
+	CountTableOrder() (int64, error)
+}
+type OrderRepository interface {
+}

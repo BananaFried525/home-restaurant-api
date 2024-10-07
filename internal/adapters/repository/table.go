@@ -20,6 +20,7 @@ func NewTableRepository(db *gorm.DB) ports.TableRepository {
 }
 
 func (t *TableRepository) CreateTable(table domain.Table) error {
+	// start transaction
 	var err error
 	txn := t.db.Begin(&sql.TxOptions{Isolation: sql.LevelReadCommitted})
 	if txn.Error != nil {

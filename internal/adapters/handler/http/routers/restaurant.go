@@ -9,13 +9,20 @@ import (
 )
 
 func Restaurant(g *gin.RouterGroup, db *gorm.DB) {
-	r := g.Group("/restaurant")
-
-	// Table
+	orderRepo := repository.NewTableOrderRepository(db)
 	tableRepo := repository.NewTableRepository(db)
+	tableOrderRepo := repository.NewTableOrderRepository(db)
+
+	r := g.Group("/restaurant")
+	// Table
 	tableService := services.NewTableService(tableRepo)
-	tableHandler := adapter.NewHttpTableHandler(tableService)
-	r.POST("/table", tableHandler.AddTable)
-	r.GET("/table", tableHandler.GetTable)
-	r.GET("/table/detail", tableHandler.GetTableDetail)
+	tableAdapter := adapter.NewHttpTableHandler(tableService)
+	r.POST("/table", tableAdapter.AddTable)
+	r.GET("/table", tableAdapter.GetTable)
+	r.GET("/table/detail", tableAdapter.GetTableDetail)
+
+	//Order
+	orderService := services.NewOrderService(tableOrderRepo, orderRepo)
+	orderAdapter := adapter.NewHttpOrderHandler(orderService)
+	r.POST("/order/table", orderAdapter.CreateTableOrder)
 }
