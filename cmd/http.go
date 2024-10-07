@@ -15,7 +15,7 @@ func main() {
 	r := gin.New()
 
 	log := middlewares.NewLoggingMiddleware()
-	r.Use(log.SystemLog())
+	r.Use(log.SystemRequestLog())
 
 	recover := middlewares.NewRecoverMiddleware()
 	r.Use(gin.CustomRecovery(recover.Recovery))

@@ -16,4 +16,6 @@ func Restaurant(g *gin.RouterGroup, db *gorm.DB) {
 	tableService := services.NewTableService(tableRepo)
 	tableHandler := adapter.NewHttpTableHandler(tableService)
 	r.POST("/table", tableHandler.AddTable)
+	r.GET("/table", tableHandler.GetTable)
+	r.GET("/table/detail", tableHandler.GetTableDetail)
 }

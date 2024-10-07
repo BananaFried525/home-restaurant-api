@@ -15,23 +15,21 @@ func NewLoggingMiddleware() ports.LoggingMiddleware {
 	return &LoggingMiddleware{}
 }
 
-func (l *LoggingMiddleware) SystemLog() gin.HandlerFunc {
+func (l *LoggingMiddleware) SystemRequestLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		t := time.Now()
+		requestPath := c.Request.URL.Path
+		requestMethod := c.Request.Method
 
-		// Set example variable
-		c.Set("example", "12345")
+		log.Printf("START| %s %s \n", requestMethod, requestPath)
 
 		// before request
-
 		c.Next()
 
 		// after request
-		latency := time.Since(t)
-		log.Print(latency)
-
 		// access the status we are sending
+		latency := time.Since(t).String()
 		status := c.Writer.Status()
-		log.Println(status)
+		log.Printf("END| %s %s %d %s \n", requestMethod, requestPath, status, latency)
 	}
 }

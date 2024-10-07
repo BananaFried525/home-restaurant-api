@@ -3,7 +3,7 @@ package ports
 import "github.com/gin-gonic/gin"
 
 type LoggingMiddleware interface {
-	SystemLog() gin.HandlerFunc
+	SystemRequestLog() gin.HandlerFunc
 }
 
 type RecoveryMiddleware interface {
