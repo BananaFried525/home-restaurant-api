@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/BananaFried525/home-restaurant-api/internal/core/domain/models"
+	"github.com/BananaFried525/home-restaurant-api/internal/core/entities"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -30,12 +30,12 @@ func InitDatabase() *gorm.DB {
 
 	// AUTO migrate for sync
 	_db.AutoMigrate(
-		&models.CustomerOrder{},
-		&models.Customer{},
-		&models.Food{},
-		&models.Order{},
-		&models.TableInfo{},
-		&models.TableOrder{},
+		&entities.CustomerOrder{},
+		&entities.Customer{},
+		&entities.Food{},
+		&entities.Order{},
+		&entities.TableInfo{},
+		&entities.TableOrder{},
 	)
 
 	log.Println("Database connected")

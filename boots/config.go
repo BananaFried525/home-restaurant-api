@@ -51,7 +51,7 @@ func loadConfigs() *ConfigsAttribute {
 func InitConfig() *ConfigsAttribute {
 	d, _ := os.Getwd()
 	fmt.Println(d)
-	err := godotenv.Load()
+	err := godotenv.Load("../.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}

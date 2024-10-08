@@ -19,4 +19,16 @@ type TableOrderRepository interface {
 	CountTableOrder() (int64, error)
 }
 type OrderRepository interface {
+	BulkCreate(data []entities.Order) (*[]entities.Order, error)
+}
+
+type CustomerOrderRepository interface {
+	Create(data entities.CustomerOrder) (*entities.CustomerOrder, error)
+	GetByID(ID uint) (*entities.CustomerOrder, error)
+	Update(ID uint, data entities.CustomerOrder) error
+}
+
+type FoodRepository interface {
+	GetByID(ID uint) (*entities.Food, error)
+	GetListByID(ID []uint) (*[]entities.Food, error)
 }

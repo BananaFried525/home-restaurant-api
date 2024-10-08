@@ -18,3 +18,26 @@ type TableOrder struct {
 	OpenedAt      *string `json:"open_at"`
 	CheckedOutAt  *string `json:"check_out_at"`
 }
+
+type Order struct {
+	ID              uint   `json:"id"`
+	TableOrderID    uint   `json:"table_order_id"`
+	CustomerOrderID uint   `json:"customer_order_id"`
+	FoodID          uint   `json:"food_id"`
+	Status          string `json:"status"`
+	PendingAt       string `json:"pending_at"`
+	DoneAt          string `json:"done_at"`
+	CancelAt        string `json:"cancel_at"`
+	Remark          string `json:"remark"`
+}
+
+type CustomerOrder struct {
+	ID           uint    `json:"id"`
+	TableInfoID  uint    `json:"table_id"`
+	TableOrderID uint    `json:"table_order_id"`
+	CustomerID   *uint   `json:"customer_id"`
+	OrderNumber  string  `json:"order_number"`
+	OrderAt      string  `json:"order_at"`
+	Remark       string  `json:"remark"`
+	Order        []Order `json:"order"`
+}

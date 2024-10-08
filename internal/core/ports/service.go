@@ -15,4 +15,5 @@ type TableService interface {
 
 type OrderService interface {
 	CreateTableOrder(tableID uint) (domain.TableOrder, error)
+	CreateOrder(domain.CustomerOrder) (domain.CustomerOrder, error)
 }
