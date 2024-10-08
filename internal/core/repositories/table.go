@@ -1,4 +1,4 @@
-package repository
+package repositories
 
 import (
 	"database/sql"
@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/BananaFried525/home-restaurant-api/internal/core/domain"
-	"github.com/BananaFried525/home-restaurant-api/internal/core/domain/models"
+	"github.com/BananaFried525/home-restaurant-api/internal/core/entities"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/ports"
 	"gorm.io/gorm"
 )
@@ -39,8 +39,8 @@ func (t *TableRepository) CreateTable(table domain.Table) error {
 		}
 	}()
 
-	_table := models.TableInfo{}
-	if err = txn.Model(&models.TableInfo{}).Where("number=?", table.Number).First(&_table).Error; err != nil {
+	_table := entities.TableInfo{}
+	if err = txn.Model(&entities.TableInfo{}).Where("number=?", table.Number).First(&_table).Error; err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			return err
 		}
@@ -50,30 +50,30 @@ func (t *TableRepository) CreateTable(table domain.Table) error {
 		return err
 	}
 
-	data := models.TableInfo{
+	data := entities.TableInfo{
 		Number: table.Number,
-		Status: models.TableInfoStatusAvailable,
+		Status: entities.TableInfoStatusAvailable,
 	}
 
-	if err := txn.Model(&models.TableInfo{}).Create(&data).Error; err != nil {
+	if err := txn.Model(&entities.TableInfo{}).Create(&data).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (t *TableRepository) GetTable(limit int, offset int) (*[]models.TableInfo, error) {
-	var result []models.TableInfo
-	if err := t.db.Model(&models.TableInfo{}).Limit(limit).Offset(offset).Find(&result).Error; err != nil {
+func (t *TableRepository) GetTable(limit int, offset int) (*[]entities.TableInfo, error) {
+	var result []entities.TableInfo
+	if err := t.db.Model(&entities.TableInfo{}).Limit(limit).Offset(offset).Find(&result).Error; err != nil {
 		return nil, err
 	}
 
 	return &result, nil
 }
 
-func (t *TableRepository) GetTableByID(ID uint) (*models.TableInfo, error) {
-	var result models.TableInfo
-	if err := t.db.Model(&models.TableInfo{}).Where("id=?", ID).First(&result).Error; err != nil {
+func (t *TableRepository) GetTableByID(ID uint) (*entities.TableInfo, error) {
+	var result entities.TableInfo
+	if err := t.db.Model(&entities.TableInfo{}).Where("id=?", ID).First(&result).Error; err != nil {
 		return nil, err
 	}
 
@@ -82,13 +82,13 @@ func (t *TableRepository) GetTableByID(ID uint) (*models.TableInfo, error) {
 
 func (t *TableRepository) UpdateTable(ID uint, table domain.Table) error {
 
-	data := models.TableInfo{
+	data := entities.TableInfo{
 		ID:     ID,
 		Number: table.Number,
-		Status: models.TableInfoStatus(table.Status),
+		Status: entities.TableInfoStatus(table.Status),
 	}
 
-	if err := t.db.Model(&models.TableInfo{}).Updates(&data).Error; err != nil {
+	if err := t.db.Model(&entities.TableInfo{}).Updates(&data).Error; err != nil {
 		return err
 	}
 
@@ -96,7 +96,7 @@ func (t *TableRepository) UpdateTable(ID uint, table domain.Table) error {
 }
 
 func (t *TableRepository) DeltetTable(ID uint) error {
-	if err := t.db.Model(&models.TableInfo{}).Delete(&models.TableInfo{ID: ID}).Error; err != nil {
+	if err := t.db.Model(&entities.TableInfo{}).Delete(&entities.TableInfo{ID: ID}).Error; err != nil {
 		return err
 	}
 

@@ -2,7 +2,7 @@ package services
 
 import (
 	"github.com/BananaFried525/home-restaurant-api/internal/core/domain"
-	"github.com/BananaFried525/home-restaurant-api/internal/core/domain/models"
+	"github.com/BananaFried525/home-restaurant-api/internal/core/entities"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/ports"
 )
 
@@ -20,11 +20,11 @@ func (t *TableService) AddTable(Number int) error {
 	return t.repo.CreateTable(domain.Table{Number: Number})
 }
 
-func (t *TableService) GetListTable(limit int, offset int) (*[]models.TableInfo, error) {
+func (t *TableService) GetListTable(limit int, offset int) (*[]entities.TableInfo, error) {
 	return t.repo.GetTable(limit, offset)
 }
 
-func (t *TableService) GetTableDetail(ID uint) (*models.TableInfo, error) {
+func (t *TableService) GetTableDetail(ID uint) (*entities.TableInfo, error) {
 	return t.repo.GetTableByID(ID)
 }
 

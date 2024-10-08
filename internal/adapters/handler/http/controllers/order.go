@@ -7,19 +7,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type HttpOrderHandler struct {
+type HttpOrderControllers struct {
 	orderService ports.OrderService
 }
 
-func NewHttpOrderHandler(orderService ports.OrderService) *HttpOrderHandler {
-	return &HttpOrderHandler{orderService: orderService}
+func NewHttpOrderControllers(orderService ports.OrderService) *HttpOrderControllers {
+	return &HttpOrderControllers{orderService: orderService}
 }
 
 type CreateTableOrderRequest struct {
 	TableID uint `json:"table_id" binding:"required"`
 }
 
-func (h *HttpOrderHandler) CreateTableOrder(c *gin.Context) {
+func (h *HttpOrderControllers) CreateTableOrder(c *gin.Context) {
 	var req CreateTableOrderRequest
 	if err := c.ShouldBindBodyWithJSON(&req); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})

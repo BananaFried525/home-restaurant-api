@@ -9,12 +9,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type HttpTableHandler struct {
+type HttpTableController struct {
 	service ports.TableService
 }
 
-func NewHttpTableHandler(service ports.TableService) *HttpTableHandler {
-	return &HttpTableHandler{service: service}
+func NewHttpTableController(service ports.TableService) *HttpTableController {
+	return &HttpTableController{service: service}
 }
 
 type AddTableRequest struct {
@@ -22,7 +22,7 @@ type AddTableRequest struct {
 	Capacity int `json:"capacity" min:"1" binding:"required"`
 }
 
-func (h *HttpTableHandler) AddTable(c *gin.Context) {
+func (h *HttpTableController) AddTable(c *gin.Context) {
 	var req AddTableRequest
 	if err := c.ShouldBindBodyWithJSON(&req); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})
@@ -46,7 +46,7 @@ type GetTableRequest struct {
 	Offset int `form:"offset,default=0"`
 }
 
-func (h *HttpTableHandler) GetTable(c *gin.Context) {
+func (h *HttpTableController) GetTable(c *gin.Context) {
 	var req GetTableRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})
@@ -68,7 +68,7 @@ type GetTableDetailRequest struct {
 	ID uint `form:"id" binding:"required"`
 }
 
-func (h *HttpTableHandler) GetTableDetail(c *gin.Context) {
+func (h *HttpTableController) GetTableDetail(c *gin.Context) {
 	var req GetTableDetailRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})

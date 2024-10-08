@@ -1,11 +1,11 @@
-package repository
+package repositories
 
 import (
 	"database/sql"
 	"log"
 	"time"
 
-	"github.com/BananaFried525/home-restaurant-api/internal/core/domain/models"
+	"github.com/BananaFried525/home-restaurant-api/internal/core/entities"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/ports"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/utils"
 	"gorm.io/gorm"
@@ -21,7 +21,7 @@ func NewTableOrderRepository(db *gorm.DB) ports.TableOrderRepository {
 	}
 }
 
-func (t *TableOrderRepository) CreateTableOrder(tableOrder models.TableOrder) (*models.TableOrder, error) {
+func (t *TableOrderRepository) CreateTableOrder(tableOrder entities.TableOrder) (*entities.TableOrder, error) {
 	// start transaction
 	var err error
 	txn := t.db.Begin(&sql.TxOptions{Isolation: sql.LevelReadCommitted})
@@ -42,20 +42,20 @@ func (t *TableOrderRepository) CreateTableOrder(tableOrder models.TableOrder) (*
 	}()
 
 	result := tableOrder
-	if err = txn.Model(&models.TableOrder{}).Create(&result).Error; err != nil {
+	if err = txn.Model(&entities.TableOrder{}).Create(&result).Error; err != nil {
 		return nil, err
 	}
 
 	return &result, nil
 }
 
-func (t *TableOrderRepository) GetLatestTableOrder(tableID uint) (*models.TableOrder, error) {
-	result := models.TableOrder{
+func (t *TableOrderRepository) GetLatestTableOrder(tableID uint) (*entities.TableOrder, error) {
+	result := entities.TableOrder{
 		TableInfoID: tableID,
-		Status:      models.TableOrderStatusCheckedOut,
+		Status:      entities.TableOrderStatusCheckedOut,
 	}
 
-	if err := t.db.Model(&models.TableOrder{}).Preload("Table").Last(&result).Error; err != nil {
+	if err := t.db.Model(&entities.TableOrder{}).Preload("Table").Last(&result).Error; err != nil {
 		return nil, err
 	}
 
@@ -65,7 +65,7 @@ func (t *TableOrderRepository) GetLatestTableOrder(tableID uint) (*models.TableO
 func (t *TableOrderRepository) CountTableOrder() (int64, error) {
 	var result int64
 	startMonth, endMonth := utils.GetStartEndOfMonth()
-	if err := t.db.Model(&models.TableOrder{}).Where(
+	if err := t.db.Model(&entities.TableOrder{}).Where(
 		"created_at between ? and ?",
 		startMonth.Format(time.RFC3339),
 		endMonth.Format(time.RFC3339),

@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/BananaFried525/home-restaurant-api/internal/core/domain"
-	"github.com/BananaFried525/home-restaurant-api/internal/core/domain/models"
+	"github.com/BananaFried525/home-restaurant-api/internal/core/entities"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/ports"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/utils"
 )
@@ -33,11 +33,11 @@ func (o *OrderService) CreateTableOrder(tableID uint) (domain.TableOrder, error)
 	// create table order
 	now := time.Now()
 	tableOrderNumber := utils.CreateRunningNumber(int(count) + 1)
-	tableOrderData := models.TableOrder{
+	tableOrderData := entities.TableOrder{
 		Number:        tableOrderNumber,
 		ReceiptNumber: tableOrderNumber,
 		TableInfoID:   tableID,
-		Status:        models.TableOrderStatusOpen,
+		Status:        entities.TableOrderStatusOpen,
 		OpenedAt:      &now,
 	}
 	tableOrder, err := o.tableOrderRepo.CreateTableOrder(tableOrderData)
