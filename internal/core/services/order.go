@@ -1,12 +1,14 @@
 package services
 
 import (
+	"errors"
 	"time"
 
 	"github.com/BananaFried525/home-restaurant-api/internal/core/domain"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/entities"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/ports"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/utils"
+	"gorm.io/gorm"
 )
 
 type OrderService struct {
@@ -77,7 +79,7 @@ func (o *OrderService) CreateOrder(data domain.CustomerOrder) (domain.CustomerOr
 	}
 
 	ordersData := make([]entities.Order, 0)
-	for _, orderData := range data.Order {
+	for _, orderData := range data.Orders {
 		tmpData := entities.Order{
 			TableOrderID:    orderData.TableOrderID,
 			CustomerOrderID: customerOrder.ID,
@@ -113,7 +115,71 @@ func (o *OrderService) CreateOrder(data domain.CustomerOrder) (domain.CustomerOr
 		TableOrderID: customerOrder.TableOrderID,
 		OrderNumber:  customerOrder.OrderNumber,
 		OrderAt:      customerOrder.OrderedAt.Format(time.RFC3339),
-		Order:        ordersResult,
+		Orders:       ordersResult,
+	}
+
+	return result, nil
+}
+
+func (o *OrderService) ViewOrder(customerID uint) (domain.CustomerOrder, error) {
+	result := domain.CustomerOrder{}
+
+	// get customerOrderByID include order
+	customerOrder, err := o.customerOrderRepo.GetDetailByID(customerID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return result, errors.New("NOT FOUND")
+		}
+
+		return result, err
+	}
+
+	if customerOrder == nil || customerOrder.Orders == nil {
+		return result, errors.New("NOT FOUND")
+	}
+
+	//format and return
+	orders := make([]domain.Order, 0)
+	for _, tmpOrder := range *customerOrder.Orders {
+		var doneAt string
+		if tmpOrder.DoneAt != nil {
+			doneAt = tmpOrder.DoneAt.Format(time.RFC3339)
+		}
+		var cancelAt string
+		if tmpOrder.DoneAt != nil {
+			cancelAt = tmpOrder.CancelAt.Format(time.RFC3339)
+		}
+
+		tmp := domain.Order{
+			ID:              tmpOrder.ID,
+			TableOrderID:    tmpOrder.TableOrderID,
+			CustomerOrderID: tmpOrder.CustomerOrderID,
+			FoodID:          tmpOrder.FoodID,
+			Status:          string(tmpOrder.Status),
+			PendingAt:       tmpOrder.PendingAt.Format(time.RFC3339),
+			DoneAt:          &doneAt,
+			CancelAt:        &cancelAt,
+			Remark:          tmpOrder.Remark,
+			Food: domain.Food{
+				ID:           tmpOrder.Food.ID,
+				Name:         tmpOrder.Food.Name,
+				DisplayImage: tmpOrder.Food.DisplayImage,
+				Description:  tmpOrder.Food.Description,
+				Price:        tmpOrder.Food.Price,
+			},
+		}
+		orders = append(orders, tmp)
+	}
+
+	result = domain.CustomerOrder{
+		ID:           customerOrder.ID,
+		TableInfoID:  customerOrder.TableInfoID,
+		TableOrderID: customerOrder.TableOrderID,
+		CustomerID:   customerOrder.CustomerID,
+		OrderNumber:  customerOrder.OrderNumber,
+		OrderAt:      customerOrder.OrderedAt.Format(time.RFC3339),
+		Remark:       customerOrder.Remark,
+		Orders:       orders,
 	}
 
 	return result, nil

@@ -1,6 +1,7 @@
 package http
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/BananaFried525/home-restaurant-api/internal/core/domain"
@@ -67,10 +68,33 @@ func (h *HttpOrderControllers) CreateCustomerOrder(c *gin.Context) {
 	data := domain.CustomerOrder{
 		TableInfoID:  req.TableInfoID,
 		TableOrderID: req.TableOrderID,
-		Order:        orders,
+		Orders:       orders,
 	}
 
 	result, err := h.orderService.CreateOrder(data)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"msg": "INTERNAL SERVER ERROR"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": result,
+	})
+}
+
+type GetOrderDetailRequest struct {
+	CustomerOrderID uint `form:"customer_order_id" binding:"required"`
+}
+
+func (h *HttpOrderControllers) GetOrderDetail(c *gin.Context) {
+	var req GetOrderDetailRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		log.Println(err.Error())
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})
+		return
+	}
+
+	result, err := h.orderService.ViewOrder(req.CustomerOrderID)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"msg": "INTERNAL SERVER ERROR"})
 		return

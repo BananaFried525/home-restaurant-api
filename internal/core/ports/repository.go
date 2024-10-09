@@ -26,6 +26,7 @@ type CustomerOrderRepository interface {
 	Create(data entities.CustomerOrder) (*entities.CustomerOrder, error)
 	GetByID(ID uint) (*entities.CustomerOrder, error)
 	Update(ID uint, data entities.CustomerOrder) error
+	GetDetailByID(ID uint) (*entities.CustomerOrder, error)
 }
 
 type FoodRepository interface {

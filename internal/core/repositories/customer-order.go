@@ -69,3 +69,15 @@ func NewCustomerOrderRepository(db *gorm.DB) ports.CustomerOrderRepository {
 		db: db,
 	}
 }
+
+func (c *CustomerOrderRepository) GetDetailByID(ID uint) (*entities.CustomerOrder, error) {
+	var result entities.CustomerOrder
+	err := c.db.Model(&entities.CustomerOrder{}).Preload("Orders", func(_db *gorm.DB) *gorm.DB {
+		return _db.Preload("Food")
+	}).First(&result, ID).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
