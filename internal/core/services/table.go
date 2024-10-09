@@ -20,18 +20,28 @@ func (t *TableService) AddTable(Number int) error {
 	return t.repo.CreateTable(domain.Table{Number: Number})
 }
 
-func (t *TableService) GetListTable(limit int, offset int) (*[]entities.TableInfo, error) {
-	return t.repo.GetTable(limit, offset)
+func (t *TableService) GetListTable(limit int, offset int) ([]domain.Table, error) {
+	var result []domain.Table
+
+	tables, err := t.repo.GetTable(limit, offset)
+	if err != nil {
+		return result, err
+	}
+
+	result = make([]domain.Table, 0)
+	for _, table := range *tables {
+		tmp := domain.Table{
+			ID:     table.ID,
+			Number: table.Number,
+			Status: string(table.Status),
+		}
+
+		result = append(result, tmp)
+	}
+
+	return result, nil
 }
 
 func (t *TableService) GetTableDetail(ID uint) (*entities.TableInfo, error) {
 	return t.repo.GetTableByID(ID)
-}
-
-func (t *TableService) UpdateTable(ID uint, table domain.Table) error {
-	return t.repo.UpdateTable(ID, table)
-}
-
-func (t *TableService) DeleteTable(ID uint) error {
-	return t.repo.DeltetTable(ID)
 }

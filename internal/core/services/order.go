@@ -12,6 +12,7 @@ import (
 )
 
 type OrderService struct {
+	tableRepo         ports.TableRepository
 	tableOrderRepo    ports.TableOrderRepository
 	orderRepo         ports.OrderRepository
 	customerOrderRepo ports.CustomerOrderRepository
@@ -19,6 +20,7 @@ type OrderService struct {
 }
 
 func NewOrderService(
+	tableRepo ports.TableRepository,
 	tableOrderRepo ports.TableOrderRepository,
 	orderRepo ports.OrderRepository,
 	customerOrderRepo ports.CustomerOrderRepository,
@@ -34,6 +36,18 @@ func NewOrderService(
 
 func (o *OrderService) CreateTableOrder(tableID uint) (domain.TableOrder, error) {
 	result := domain.TableOrder{}
+
+	// check table is available
+	table, err := o.tableRepo.GetTableByID(tableID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return result, errors.New("NOT FOUND")
+		}
+		return result, nil
+	}
+	if table.Status != entities.TableInfoStatusAvailable {
+		return result, errors.New("NOT AVAILABLE")
+	}
 
 	// count total table order on table
 	count, err := o.tableOrderRepo.CountTableOrder()

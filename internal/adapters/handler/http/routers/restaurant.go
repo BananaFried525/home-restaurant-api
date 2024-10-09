@@ -26,7 +26,7 @@ func Restaurant(g *gin.RouterGroup, db *gorm.DB) {
 	r.GET("/table/detail", tableControllers.GetTableDetail)
 
 	//Order
-	orderService := services.NewOrderService(tableOrderRepo, orderRepo, customerRepo, foodRepo)
+	orderService := services.NewOrderService(tableRepo, tableOrderRepo, orderRepo, customerRepo, foodRepo)
 	orderControllers := controllers.NewHttpOrderControllers(orderService)
 
 	r.POST("/order/table", orderControllers.CreateTableOrder)
