@@ -15,18 +15,22 @@ func Restaurant(g *gin.RouterGroup, db *gorm.DB) {
 	tableRepo := repositories.NewTableRepository(db)
 	tableOrderRepo := repositories.NewTableOrderRepository(db)
 	customerRepo := repositories.NewCustomerOrderRepository(db)
+	foodRepo := repositories.NewFoodRepository(db)
 
 	// Table
 	tableService := services.NewTableService(tableRepo)
 	tableControllers := controllers.NewHttpTableController(tableService)
+
 	r.POST("/table", tableControllers.AddTable)
 	r.GET("/table", tableControllers.GetTable)
 	r.GET("/table/detail", tableControllers.GetTableDetail)
 
 	//Order
-	orderService := services.NewOrderService(tableOrderRepo, orderRepo, customerRepo)
+	orderService := services.NewOrderService(tableOrderRepo, orderRepo, customerRepo, foodRepo)
 	orderControllers := controllers.NewHttpOrderControllers(orderService)
+
 	r.POST("/order/table", orderControllers.CreateTableOrder)
 	r.POST("/order/customer", orderControllers.CreateCustomerOrder)
 	r.GET("/order/customer/detail", orderControllers.GetOrderDetail)
+	r.GET("/order/menu", orderControllers.GetMenu)
 }

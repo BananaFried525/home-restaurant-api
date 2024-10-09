@@ -15,13 +15,20 @@ type OrderService struct {
 	tableOrderRepo    ports.TableOrderRepository
 	orderRepo         ports.OrderRepository
 	customerOrderRepo ports.CustomerOrderRepository
+	foodRepo          ports.FoodRepository
 }
 
-func NewOrderService(tableOrderRepo ports.TableOrderRepository, orderRepo ports.OrderRepository, customerOrderRepo ports.CustomerOrderRepository) ports.OrderService {
+func NewOrderService(
+	tableOrderRepo ports.TableOrderRepository,
+	orderRepo ports.OrderRepository,
+	customerOrderRepo ports.CustomerOrderRepository,
+	foodRepo ports.FoodRepository,
+) ports.OrderService {
 	return &OrderService{
 		tableOrderRepo:    tableOrderRepo,
 		orderRepo:         orderRepo,
 		customerOrderRepo: customerOrderRepo,
+		foodRepo:          foodRepo,
 	}
 }
 
@@ -180,6 +187,30 @@ func (o *OrderService) ViewOrder(customerID uint) (domain.CustomerOrder, error) 
 		OrderAt:      customerOrder.OrderedAt.Format(time.RFC3339),
 		Remark:       customerOrder.Remark,
 		Orders:       orders,
+	}
+
+	return result, nil
+}
+
+func (o *OrderService) ViewMenu() ([]domain.Food, error) {
+	var result []domain.Food
+	foods, err := o.foodRepo.Get()
+	if err != nil {
+		return result, nil
+	}
+
+	result = make([]domain.Food, 0)
+	for _, food := range *foods {
+		tmp := domain.Food{
+			ID:           food.ID,
+			Name:         food.Name,
+			DisplayImage: food.DisplayImage,
+			Description:  food.Description,
+			Price:        food.Price,
+			Status:       string(food.Status),
+		}
+
+		result = append(result, tmp)
 	}
 
 	return result, nil

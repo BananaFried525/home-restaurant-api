@@ -15,6 +15,7 @@ type TableService interface {
 
 type OrderService interface {
 	CreateTableOrder(tableID uint) (domain.TableOrder, error)
+	ViewMenu() ([]domain.Food, error)
 	CreateOrder(domain.CustomerOrder) (domain.CustomerOrder, error)
 	ViewOrder(customerOrderID uint) (domain.CustomerOrder, error)
 }

@@ -25,6 +25,7 @@ type Food struct {
 	DisplayImage string  `json:"display_name"`
 	Description  string  `json:"description"`
 	Price        float64 `json:"price"`
+	Status       string  `json:"stutus"`
 }
 
 type Order struct {

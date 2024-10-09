@@ -104,3 +104,26 @@ func (h *HttpOrderControllers) GetOrderDetail(c *gin.Context) {
 		"data": result,
 	})
 }
+
+type GetMenuRequest struct {
+}
+
+func (h *HttpOrderControllers) GetMenu(c *gin.Context) {
+	var req GetMenuRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		log.Println(err.Error())
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})
+		return
+	}
+
+	result, err := h.orderService.ViewMenu()
+	if err != nil {
+		log.Println(err.Error())
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"msg": "INTERNAL SERVER ERROR"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": result,
+	})
+}

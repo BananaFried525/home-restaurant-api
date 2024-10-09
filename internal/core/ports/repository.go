@@ -30,6 +30,7 @@ type CustomerOrderRepository interface {
 }
 
 type FoodRepository interface {
+	Get() (*[]entities.Food, error)
 	GetByID(ID uint) (*entities.Food, error)
 	GetListByID(ID []uint) (*[]entities.Food, error)
 }
