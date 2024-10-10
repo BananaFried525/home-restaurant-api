@@ -9,7 +9,7 @@ type TableRepository interface {
 	CreateTable(table domain.Table) error
 	GetTable(limit int, offset int) (*[]entities.TableInfo, error)
 	GetTableByID(ID uint) (*entities.TableInfo, error)
-	UpdateTable(ID uint, table domain.Table) error
+	UpdateTable(ID uint, data entities.TableInfo) error
 	DeltetTable(ID uint) error
 }
 

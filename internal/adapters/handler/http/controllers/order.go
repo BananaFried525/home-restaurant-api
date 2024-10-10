@@ -1,11 +1,11 @@
 package http
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/BananaFried525/home-restaurant-api/internal/core/domain"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/ports"
+	"github.com/BananaFried525/home-restaurant-api/internal/core/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,13 +24,13 @@ type CreateTableOrderRequest struct {
 func (h *HttpOrderControllers) CreateTableOrder(c *gin.Context) {
 	var req CreateTableOrderRequest
 	if err := c.ShouldBindBodyWithJSON(&req); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})
+		utils.CustomErrorHandler(c, utils.NewCustomError(utils.BadRequestError))
 		return
 	}
 
 	result, err := h.orderService.CreateTableOrder(req.TableID)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"msg": "INTERNAL SERVER ERROR"})
+		utils.CustomErrorHandler(c, err)
 		return
 	}
 
@@ -52,7 +52,7 @@ type CreateCustomerOrderRequest struct {
 func (h *HttpOrderControllers) CreateCustomerOrder(c *gin.Context) {
 	var req CreateCustomerOrderRequest
 	if err := c.ShouldBindBodyWithJSON(&req); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})
+		utils.CustomErrorHandler(c, utils.NewCustomError(utils.BadRequestError))
 		return
 	}
 
@@ -73,7 +73,7 @@ func (h *HttpOrderControllers) CreateCustomerOrder(c *gin.Context) {
 
 	result, err := h.orderService.CreateOrder(data)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"msg": "INTERNAL SERVER ERROR"})
+		utils.CustomErrorHandler(c, err)
 		return
 	}
 
@@ -89,14 +89,13 @@ type GetOrderDetailRequest struct {
 func (h *HttpOrderControllers) GetOrderDetail(c *gin.Context) {
 	var req GetOrderDetailRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
-		log.Println(err.Error())
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})
+		utils.CustomErrorHandler(c, utils.NewCustomError(utils.BadRequestError))
 		return
 	}
 
 	result, err := h.orderService.ViewOrder(req.CustomerOrderID)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"msg": "INTERNAL SERVER ERROR"})
+		utils.CustomErrorHandler(c, err)
 		return
 	}
 
@@ -111,15 +110,13 @@ type GetMenuRequest struct {
 func (h *HttpOrderControllers) GetMenu(c *gin.Context) {
 	var req GetMenuRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
-		log.Println(err.Error())
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})
+		utils.CustomErrorHandler(c, utils.NewCustomError(utils.BadRequestError))
 		return
 	}
 
 	result, err := h.orderService.ViewMenu()
 	if err != nil {
-		log.Println(err.Error())
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"msg": "INTERNAL SERVER ERROR"})
+		utils.CustomErrorHandler(c, err)
 		return
 	}
 

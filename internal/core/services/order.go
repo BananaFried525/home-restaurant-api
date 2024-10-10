@@ -27,6 +27,7 @@ func NewOrderService(
 	foodRepo ports.FoodRepository,
 ) ports.OrderService {
 	return &OrderService{
+		tableRepo:         tableRepo,
 		tableOrderRepo:    tableOrderRepo,
 		orderRepo:         orderRepo,
 		customerOrderRepo: customerOrderRepo,
@@ -41,12 +42,12 @@ func (o *OrderService) CreateTableOrder(tableID uint) (domain.TableOrder, error)
 	table, err := o.tableRepo.GetTableByID(tableID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return result, errors.New("NOT FOUND")
+			return result, utils.NewCustomError(utils.NotFoundError)
 		}
 		return result, nil
 	}
 	if table.Status != entities.TableInfoStatusAvailable {
-		return result, errors.New("NOT AVAILABLE")
+		return result, utils.NewCustomError(utils.NotAvailableError)
 	}
 
 	// count total table order on table
@@ -66,6 +67,11 @@ func (o *OrderService) CreateTableOrder(tableID uint) (domain.TableOrder, error)
 		OpenedAt:      &now,
 	}
 	tableOrder, err := o.tableOrderRepo.CreateTableOrder(tableOrderData)
+	if err != nil {
+		return result, err
+	}
+
+	err = o.tableRepo.UpdateTable(tableID, entities.TableInfo{ID: tableID, Number: table.Number, Status: "unavailable"})
 	if err != nil {
 		return result, err
 	}
@@ -149,14 +155,14 @@ func (o *OrderService) ViewOrder(customerID uint) (domain.CustomerOrder, error) 
 	customerOrder, err := o.customerOrderRepo.GetDetailByID(customerID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return result, errors.New("NOT FOUND")
+			return result, utils.NewCustomError(utils.NotFoundError)
 		}
 
 		return result, err
 	}
 
 	if customerOrder == nil || customerOrder.Orders == nil {
-		return result, errors.New("NOT FOUND")
+		return result, utils.NewCustomError(utils.NotFoundError)
 	}
 
 	//format and return

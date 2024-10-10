@@ -8,6 +8,7 @@ import (
 	"github.com/BananaFried525/home-restaurant-api/internal/core/domain"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/entities"
 	"github.com/BananaFried525/home-restaurant-api/internal/core/ports"
+	"github.com/BananaFried525/home-restaurant-api/internal/core/utils"
 	"gorm.io/gorm"
 )
 
@@ -46,7 +47,7 @@ func (t *TableRepository) CreateTable(table domain.Table) error {
 		}
 	}
 	if _table.ID != 0 {
-		err = errors.New("DATA EXIST")
+		err = utils.NewCustomError(utils.DataExistError)
 		return err
 	}
 
@@ -73,22 +74,15 @@ func (t *TableRepository) GetTable(limit int, offset int) (*[]entities.TableInfo
 
 func (t *TableRepository) GetTableByID(ID uint) (*entities.TableInfo, error) {
 	var result entities.TableInfo
-	if err := t.db.Model(&entities.TableInfo{}).Where("id=?", ID).First(&result).Error; err != nil {
+	if err := t.db.Model(&entities.TableInfo{}).Where("id = ?", ID).First(&result).Error; err != nil {
 		return nil, err
 	}
 
 	return &result, nil
 }
 
-func (t *TableRepository) UpdateTable(ID uint, table domain.Table) error {
-
-	data := entities.TableInfo{
-		ID:     ID,
-		Number: table.Number,
-		Status: entities.TableInfoStatus(table.Status),
-	}
-
-	if err := t.db.Model(&entities.TableInfo{}).Updates(&data).Error; err != nil {
+func (t *TableRepository) UpdateTable(ID uint, data entities.TableInfo) error {
+	if err := t.db.Model(&entities.TableInfo{}).Where("id = ?", ID).Updates(&data).Error; err != nil {
 		return err
 	}
 

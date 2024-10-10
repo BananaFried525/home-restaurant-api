@@ -1,12 +1,11 @@
 package http
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/BananaFried525/home-restaurant-api/internal/core/ports"
+	"github.com/BananaFried525/home-restaurant-api/internal/core/utils"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type HttpTableController struct {
@@ -25,16 +24,12 @@ type AddTableRequest struct {
 func (h *HttpTableController) AddTable(c *gin.Context) {
 	var req AddTableRequest
 	if err := c.ShouldBindBodyWithJSON(&req); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})
+		utils.CustomErrorHandler(c, utils.NewCustomError(utils.BadRequestError))
 		return
 	}
 
 	if err := h.service.AddTable(req.Number); err != nil {
-		if err.Error() == "DATA EXIST" {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "DATA EXIST"})
-		} else {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"msg": "INTERNAL SERVER ERROR"})
-		}
+		utils.CustomErrorHandler(c, err)
 		return
 	}
 
@@ -49,13 +44,13 @@ type GetTableRequest struct {
 func (h *HttpTableController) GetTable(c *gin.Context) {
 	var req GetTableRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})
+		utils.CustomErrorHandler(c, utils.NewCustomError(utils.BadRequestError))
 		return
 	}
 
 	tableList, err := h.service.GetListTable(req.Limit, req.Offset)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"msg": "INTERNAL SERVER ERROR"})
+		utils.CustomErrorHandler(c, err)
 		return
 	}
 
@@ -71,17 +66,13 @@ type GetTableDetailRequest struct {
 func (h *HttpTableController) GetTableDetail(c *gin.Context) {
 	var req GetTableDetailRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"msg": "BAD REQUEST"})
+		utils.CustomErrorHandler(c, utils.NewCustomError(utils.BadRequestError))
 		return
 	}
 
 	table, err := h.service.GetTableDetail(req.ID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"msg": "NOT FOUND"})
-		} else {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"msg": "INTERNAL SERVER ERROR"})
-		}
+		utils.CustomErrorHandler(c, err)
 		return
 	}
 
