@@ -54,14 +54,3 @@ func GetFood(params *GetFoodParams, dbTxn *gorm.DB) ([]Food, error) {
 type GetListFoodByIDParams struct {
 	ID []uint
 }
-
-func GetListFoodByID(params *GetListFoodByIDParams, dbTxn *gorm.DB) *[]Food {
-	var result *[]Food
-
-	err := dbTxn.Where("id in ?", params.ID).Find(&result).Error
-	if err != nil {
-		panic(err.Error())
-	}
-
-	return result
-}

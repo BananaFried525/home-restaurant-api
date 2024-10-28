@@ -44,8 +44,8 @@ func CustomErrorHandler(c *gin.Context, err error) {
 		httpCode = http.StatusBadRequest
 		message = string(DataExistError)
 		break
-	case string(InternalServerError):
 	default:
+		// default Internal server error case
 		httpCode = http.StatusInternalServerError
 		message = string(InternalServerError)
 	}

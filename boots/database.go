@@ -34,7 +34,7 @@ func InitDatabase() *gorm.DB {
 		&entities.Customer{},
 		&entities.Food{},
 		&entities.Order{},
-		&entities.TableInfo{},
+		&entities.Table{},
 		&entities.TableOrder{},
 	)
 

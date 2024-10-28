@@ -42,6 +42,6 @@ func (t *TableService) GetListTable(limit int, offset int) ([]domain.Table, erro
 	return result, nil
 }
 
-func (t *TableService) GetTableDetail(ID uint) (*entities.TableInfo, error) {
+func (t *TableService) GetTableDetail(ID uint) (*entities.Table, error) {
 	return t.repo.GetTableByID(ID)
 }

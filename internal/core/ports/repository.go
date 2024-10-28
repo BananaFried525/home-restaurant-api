@@ -7,9 +7,9 @@ import (
 
 type TableRepository interface {
 	CreateTable(table domain.Table) error
-	GetTable(limit int, offset int) (*[]entities.TableInfo, error)
-	GetTableByID(ID uint) (*entities.TableInfo, error)
-	UpdateTable(ID uint, data entities.TableInfo) error
+	GetTable(limit int, offset int) (*[]entities.Table, error)
+	GetTableByID(ID uint) (*entities.Table, error)
+	UpdateTable(ID uint, data entities.Table) error
 	DeltetTable(ID uint) error
 }
 
@@ -17,6 +17,7 @@ type TableOrderRepository interface {
 	CreateTableOrder(tableOrder entities.TableOrder) (*entities.TableOrder, error)
 	GetLatestTableOrder(tableID uint) (*entities.TableOrder, error)
 	CountTableOrder() (int64, error)
+	GetDetailByTableID(tableID uint) (*entities.TableOrder, error)
 }
 type OrderRepository interface {
 	BulkCreate(data []entities.Order) (*[]entities.Order, error)

@@ -1,7 +1,6 @@
 package boots
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -49,9 +48,7 @@ func loadConfigs() *ConfigsAttribute {
 }
 
 func InitConfig() *ConfigsAttribute {
-	d, _ := os.Getwd()
-	fmt.Println(d)
-	err := godotenv.Load("../.env")
+	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}

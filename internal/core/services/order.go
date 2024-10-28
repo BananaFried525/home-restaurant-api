@@ -46,7 +46,7 @@ func (o *OrderService) CreateTableOrder(tableID uint) (domain.TableOrder, error)
 		}
 		return result, nil
 	}
-	if table.Status != entities.TableInfoStatusAvailable {
+	if table.Status != entities.TableStatusAvailable {
 		return result, utils.NewCustomError(utils.NotAvailableError)
 	}
 
@@ -62,7 +62,7 @@ func (o *OrderService) CreateTableOrder(tableID uint) (domain.TableOrder, error)
 	tableOrderData := entities.TableOrder{
 		Number:        tableOrderNumber,
 		ReceiptNumber: tableOrderNumber,
-		TableInfoID:   tableID,
+		TableID:       tableID,
 		Status:        entities.TableOrderStatusOpen,
 		OpenedAt:      &now,
 	}
@@ -71,7 +71,7 @@ func (o *OrderService) CreateTableOrder(tableID uint) (domain.TableOrder, error)
 		return result, err
 	}
 
-	err = o.tableRepo.UpdateTable(tableID, entities.TableInfo{ID: tableID, Number: table.Number, Status: "unavailable"})
+	err = o.tableRepo.UpdateTable(tableID, entities.Table{ID: tableID, Number: table.Number, Status: "unavailable"})
 	if err != nil {
 		return result, err
 	}
@@ -81,7 +81,7 @@ func (o *OrderService) CreateTableOrder(tableID uint) (domain.TableOrder, error)
 		ID:            tableOrder.ID,
 		Number:        tableOrder.Number,
 		ReceiptNumber: &tableOrder.ReceiptNumber,
-		TableID:       tableOrder.TableInfoID,
+		TableID:       tableOrder.TableID,
 		CustomerID:    tableOrder.CustomerID,
 		Status:        string(tableOrder.Status),
 		OpenedAt:      &openedAt,
@@ -95,7 +95,7 @@ func (o *OrderService) CreateOrder(data domain.CustomerOrder) (domain.CustomerOr
 
 	now := time.Now()
 	customerOrderData := entities.CustomerOrder{
-		TableInfoID:  data.TableInfoID,
+		TableID:      data.TableID,
 		TableOrderID: data.TableOrderID,
 		OrderNumber:  now.Format("200602011504"),
 		OrderedAt:    now,
@@ -138,7 +138,7 @@ func (o *OrderService) CreateOrder(data domain.CustomerOrder) (domain.CustomerOr
 
 	result = domain.CustomerOrder{
 		ID:           customerOrder.ID,
-		TableInfoID:  customerOrder.TableInfoID,
+		TableID:      customerOrder.TableID,
 		TableOrderID: customerOrder.TableOrderID,
 		OrderNumber:  customerOrder.OrderNumber,
 		OrderAt:      customerOrder.OrderedAt.Format(time.RFC3339),
@@ -200,7 +200,7 @@ func (o *OrderService) ViewOrder(customerID uint) (domain.CustomerOrder, error) 
 
 	result = domain.CustomerOrder{
 		ID:           customerOrder.ID,
-		TableInfoID:  customerOrder.TableInfoID,
+		TableID:      customerOrder.TableID,
 		TableOrderID: customerOrder.TableOrderID,
 		CustomerID:   customerOrder.CustomerID,
 		OrderNumber:  customerOrder.OrderNumber,
@@ -234,4 +234,8 @@ func (o *OrderService) ViewMenu() ([]domain.Food, error) {
 	}
 
 	return result, nil
+}
+
+func (o *OrderService) GetTableOrderDetail(tableID uint) (domain.TableOrder, error) {
+	panic("TODO:implement")
 }

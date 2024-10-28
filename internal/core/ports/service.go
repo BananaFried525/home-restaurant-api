@@ -8,11 +8,12 @@ import (
 type TableService interface {
 	AddTable(Number int) error
 	GetListTable(limit int, offset int) ([]domain.Table, error)
-	GetTableDetail(ID uint) (*entities.TableInfo, error)
+	GetTableDetail(ID uint) (*entities.Table, error)
 }
 
 type OrderService interface {
 	CreateTableOrder(tableID uint) (domain.TableOrder, error)
+	GetTableOrderDetail(tableID uint) (domain.TableOrder, error)
 	ViewMenu() ([]domain.Food, error)
 	CreateOrder(domain.CustomerOrder) (domain.CustomerOrder, error)
 	ViewOrder(customerOrderID uint) (domain.CustomerOrder, error)

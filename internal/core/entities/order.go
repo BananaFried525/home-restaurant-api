@@ -37,18 +37,3 @@ type Order struct {
 func (Order) TableName() string {
 	return "order"
 }
-
-type BulkCreateOrderParams struct {
-	Orders []Order
-}
-
-func BulkCreateOrder(params *BulkCreateOrderParams, dbTxn *gorm.DB) *[]Order {
-	result := &params.Orders
-
-	err := dbTxn.Create(&result).Error
-	if err != nil {
-		panic(err)
-	}
-
-	return result
-}

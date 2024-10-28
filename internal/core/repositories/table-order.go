@@ -51,8 +51,8 @@ func (t *TableOrderRepository) CreateTableOrder(tableOrder entities.TableOrder) 
 
 func (t *TableOrderRepository) GetLatestTableOrder(tableID uint) (*entities.TableOrder, error) {
 	result := entities.TableOrder{
-		TableInfoID: tableID,
-		Status:      entities.TableOrderStatusCheckedOut,
+		TableID: tableID,
+		Status:  entities.TableOrderStatusCheckedOut,
 	}
 
 	if err := t.db.Model(&entities.TableOrder{}).Preload("Table").Last(&result).Error; err != nil {
@@ -74,4 +74,8 @@ func (t *TableOrderRepository) CountTableOrder() (int64, error) {
 	}
 
 	return result, nil
+}
+
+func (t *TableOrderRepository) GetDetailByTableID(tableID uint) (*entities.TableOrder, error) {
+	panic("TODO:implement")
 }

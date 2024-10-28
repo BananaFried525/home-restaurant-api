@@ -30,7 +30,8 @@ func Restaurant(g *gin.RouterGroup, db *gorm.DB) {
 	orderControllers := controllers.NewHttpOrderControllers(orderService)
 
 	r.POST("/order/table", orderControllers.CreateTableOrder)
+	r.GET("/order/table/detail", orderControllers.GetTableOrderDetail)
+	r.GET("/order/menu", orderControllers.GetMenu)
 	r.POST("/order/customer", orderControllers.CreateCustomerOrder)
 	r.GET("/order/customer/detail", orderControllers.GetOrderDetail)
-	r.GET("/order/menu", orderControllers.GetMenu)
 }

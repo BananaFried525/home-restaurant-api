@@ -8,7 +8,7 @@ import (
 
 type CustomerOrder struct {
 	ID           uint `gorm:"primaryKey;autoIncrement:true"`
-	TableInfoID  uint `gorm:"not null"`
+	TableID      uint `gorm:"not null"`
 	TableOrderID uint `gorm:"not null"`
 	CustomerID   *uint
 	OrderNumber  string         `gorm:"unique;size:12"`
@@ -19,7 +19,7 @@ type CustomerOrder struct {
 	DeletedAt    gorm.DeletedAt `gorm:"index"`
 
 	// association
-	TableInfo  *TableInfo  `gorm:"foreignKey:TableInfoID"`
+	Table      *Table      `gorm:"foreignKey:TableID"`
 	TableOrder *TableOrder `gorm:"foreignKey:TableOrderID"`
 	Orders     *[]Order    `gorm:"foreignKey:CustomerOrderID"`
 	Customer   *Customer   `gorm:"foreignKey:CustomerID"`

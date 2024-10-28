@@ -14,11 +14,12 @@ const (
 )
 
 type TableOrderStatus string
+
 type TableOrder struct {
 	ID            uint   `gorm:"primaryKey;autoIncrement:true"`
 	Number        string `gorm:"unique;size:10"`
 	ReceiptNumber string `gorm:"unique;size:10"`
-	TableInfoID   uint   `gorm:"not null"`
+	TableID       uint   `gorm:"not null"`
 	CustomerID    *uint
 	Status        TableOrderStatus `gorm:"default:open"`
 	ReservedAt    *time.Time
@@ -30,7 +31,7 @@ type TableOrder struct {
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
 
 	// association
-	TableInfo      *TableInfo       `gorm:"foreignKey:TableInfoID"`
+	Table          *Table           `gorm:"foreignKey:TableID"`
 	Customer       *Customer        `gorm:"foreignKey:CustomerID"`
 	CustomerOrders *[]CustomerOrder `gorm:"foreignKey:TableOrderID"`
 }
@@ -42,18 +43,4 @@ func (TableOrder) TableName() string {
 type CreateOrderTableParams struct {
 	TableID uint
 	Number  string
-}
-
-func CreateOrderTable(params *CreateOrderTableParams, dbTxn *gorm.DB) *TableOrder {
-	tableOrder := &TableOrder{
-		TableInfoID: params.TableID,
-		Number:      params.Number,
-	}
-
-	err := dbTxn.Create(&tableOrder).Error
-	if err != nil {
-		panic(err)
-	}
-
-	return tableOrder
 }

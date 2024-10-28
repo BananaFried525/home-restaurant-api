@@ -35,7 +35,7 @@ func (c *CustomerOrderRepository) Create(data entities.CustomerOrder) (*entities
 	}()
 
 	result := entities.CustomerOrder{
-		TableInfoID:  data.TableInfoID,
+		TableID:      data.TableID,
 		TableOrderID: data.TableOrderID,
 		CustomerID:   data.CustomerID,
 		OrderNumber:  data.OrderNumber,

@@ -44,7 +44,7 @@ type OrderAttribute struct {
 	FoodID       uint `json:"food_id" binding:"required"`
 }
 type CreateCustomerOrderRequest struct {
-	TableInfoID  uint             `json:"table_id" binding:"required"`
+	TableID      uint             `json:"table_id" binding:"required"`
 	TableOrderID uint             `json:"table_order_id" binding:"required"`
 	Orders       []OrderAttribute `json:"orders" binding:"required"`
 }
@@ -66,7 +66,7 @@ func (h *HttpOrderControllers) CreateCustomerOrder(c *gin.Context) {
 	}
 
 	data := domain.CustomerOrder{
-		TableInfoID:  req.TableInfoID,
+		TableID:      req.TableID,
 		TableOrderID: req.TableOrderID,
 		Orders:       orders,
 	}
@@ -115,6 +115,28 @@ func (h *HttpOrderControllers) GetMenu(c *gin.Context) {
 	}
 
 	result, err := h.orderService.ViewMenu()
+	if err != nil {
+		utils.CustomErrorHandler(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": result,
+	})
+}
+
+type GetTableOrderDetailRequest struct {
+	TableID uint `form:"table_id" binding:"required"`
+}
+
+func (h *HttpOrderControllers) GetTableOrderDetail(c *gin.Context) {
+	var req GetTableOrderDetailRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		utils.CustomErrorHandler(c, utils.NewCustomError(utils.BadRequestError))
+		return
+	}
+
+	result, err := h.orderService.GetTableOrderDetail(req.TableID)
 	if err != nil {
 		utils.CustomErrorHandler(c, err)
 		return

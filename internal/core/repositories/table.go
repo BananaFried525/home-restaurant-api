@@ -40,8 +40,8 @@ func (t *TableRepository) CreateTable(table domain.Table) error {
 		}
 	}()
 
-	_table := entities.TableInfo{}
-	if err = txn.Model(&entities.TableInfo{}).Where("number=?", table.Number).First(&_table).Error; err != nil {
+	_table := entities.Table{}
+	if err = txn.Model(&entities.Table{}).Where("number=?", table.Number).First(&_table).Error; err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			return err
 		}
@@ -51,38 +51,38 @@ func (t *TableRepository) CreateTable(table domain.Table) error {
 		return err
 	}
 
-	data := entities.TableInfo{
+	data := entities.Table{
 		Number: table.Number,
-		Status: entities.TableInfoStatusAvailable,
+		Status: entities.TableStatusAvailable,
 	}
 
-	if err := txn.Model(&entities.TableInfo{}).Create(&data).Error; err != nil {
+	if err := txn.Model(&entities.Table{}).Create(&data).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (t *TableRepository) GetTable(limit int, offset int) (*[]entities.TableInfo, error) {
-	var result []entities.TableInfo
-	if err := t.db.Model(&entities.TableInfo{}).Limit(limit).Offset(offset).Find(&result).Error; err != nil {
+func (t *TableRepository) GetTable(limit int, offset int) (*[]entities.Table, error) {
+	var result []entities.Table
+	if err := t.db.Model(&entities.Table{}).Limit(limit).Offset(offset).Find(&result).Error; err != nil {
 		return nil, err
 	}
 
 	return &result, nil
 }
 
-func (t *TableRepository) GetTableByID(ID uint) (*entities.TableInfo, error) {
-	var result entities.TableInfo
-	if err := t.db.Model(&entities.TableInfo{}).Where("id = ?", ID).First(&result).Error; err != nil {
+func (t *TableRepository) GetTableByID(ID uint) (*entities.Table, error) {
+	var result entities.Table
+	if err := t.db.Model(&entities.Table{}).Where("id = ?", ID).First(&result).Error; err != nil {
 		return nil, err
 	}
 
 	return &result, nil
 }
 
-func (t *TableRepository) UpdateTable(ID uint, data entities.TableInfo) error {
-	if err := t.db.Model(&entities.TableInfo{}).Where("id = ?", ID).Updates(&data).Error; err != nil {
+func (t *TableRepository) UpdateTable(ID uint, data entities.Table) error {
+	if err := t.db.Model(&entities.Table{}).Where("id = ?", ID).Updates(&data).Error; err != nil {
 		return err
 	}
 
@@ -90,7 +90,7 @@ func (t *TableRepository) UpdateTable(ID uint, data entities.TableInfo) error {
 }
 
 func (t *TableRepository) DeltetTable(ID uint) error {
-	if err := t.db.Model(&entities.TableInfo{}).Delete(&entities.TableInfo{ID: ID}).Error; err != nil {
+	if err := t.db.Model(&entities.Table{}).Delete(&entities.Table{ID: ID}).Error; err != nil {
 		return err
 	}
 
